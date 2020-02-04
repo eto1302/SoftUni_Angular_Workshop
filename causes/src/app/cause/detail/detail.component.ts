@@ -1,19 +1,17 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { CausesService } from '../causes.service';
-import { ICause } from '../shared/interfaces/cause';
-
-
+import { ICause } from 'src/app/shared/interfaces/cause';
+import { CausesService } from 'src/app/cause/causes.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-right',
-  templateUrl: './right.component.html',
-  styleUrls: ['./right.component.scss']
+  selector: 'app-cause-detail',
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.scss']
 })
-export class RightComponent implements OnInit {
+export class DetailComponent implements OnInit {
 
   @ViewChild('amountInput', { static: false }) amountInput: ElementRef<HTMLInputElement>;
 
-  @Input() selectedCause2: ICause;
 
   get color() {
     if (this.selectedCause.collectedAmount >= this.selectedCause.neededAmount) {
@@ -28,16 +26,26 @@ export class RightComponent implements OnInit {
     return 'red';
   }
 
+
+
   get selectedCause() { return this.causesService.selectedCause; }
 
-  constructor(private causesService: CausesService) { }
+  constructor(
+    private causesService: CausesService,
+    private activatedRoute: ActivatedRoute) {
+  }
+
 
   ngOnInit() {
+    this.causesService.load(this.activatedRoute.snapshot.params.id).subscribe(() => {
+      this.causesService.selectCause(this.causesService.causes[0]);
+
+    })
   }
 
   makeDonationhandler() {
     this.causesService.donate(+this.amountInput.nativeElement.value).subscribe(() => {
-      this.causesService.loadCauses();
+      this.causesService.load();
       this.amountInput.nativeElement.value = '';
     });
   }
