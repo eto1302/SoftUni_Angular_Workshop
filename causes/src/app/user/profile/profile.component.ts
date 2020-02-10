@@ -5,9 +5,11 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss', '../../../error-styles.scss']
 })
 export class ProfileComponent implements OnInit {
+  
+  emailRegex = new RegExp('(.{6,}@gmail\.(com|bg))');
 
   get currentUser(){
     return this.userService.currentUser
@@ -17,6 +19,10 @@ export class ProfileComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
+  }
+
+  handleProfileEdit({ email, password, rePassword }: { email: string, password: string, rePassword:string }) {
+    
   }
 
   logout() {
